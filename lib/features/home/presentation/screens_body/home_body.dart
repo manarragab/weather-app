@@ -1,11 +1,8 @@
-
-import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:weather_app/data/const/export.dart';
 import 'package:weather_app/data/remote_data/core.dart';
 import 'package:weather_app/features/home/domain/controller/home_controller.dart';
 import 'package:weather_app/features/home/presentation/widget/hour.dart';
-import 'package:weather_app/res/router/pages.dart';
 
 class HomeBody extends StatefulWidget {
   const HomeBody({super.key});

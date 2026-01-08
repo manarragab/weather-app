@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "ecommerce-4ad70",
+    "weather": "weather-29d0b"
+  },
+  "targets": {},
+  "etags": {}
+}

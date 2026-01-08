@@ -46,7 +46,6 @@ class HomeController extends MainGetxController with CustomStateMixin {
 
   Future<void> getALLData() async {
     loadingGetxController.showLoading();
-
     final result1 = await sl<HomeCase>().getWeather(
       authController.selectedCountry ?? "Egypt",
     ); // Future<ResponseModel<Weather>>
