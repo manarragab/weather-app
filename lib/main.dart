@@ -12,6 +12,7 @@ import 'my_app.dart';
 void main() async {
 
   await init();
+
 await Firebase.initializeApp(
   options: DefaultFirebaseOptions.currentPlatform,
 );

@@ -10,11 +10,10 @@ class FirebaseServices {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
 
-  FirebaseServices({
-    FirebaseAuth? auth,
-    FirebaseFirestore? firestore,
-  })  : _auth = auth ?? FirebaseAuth.instance,
+  FirebaseServices({FirebaseAuth? auth, FirebaseFirestore? firestore})
+      : _auth = auth ?? FirebaseAuth.instance,
         _firestore = firestore ?? FirebaseFirestore.instance;
+
 
 //1 - sign in cloudinary website
 //2- create upload presset

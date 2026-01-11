@@ -32,12 +32,11 @@
 
 
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-import 'package:get/get.dart';
 import 'package:weather_app/data/remote_data/firebase/firebase_services.dart';
 import 'package:weather_app/features/auth/domain/controller/auth_controller.dart';
 import 'package:weather_app/my_app.dart';
@@ -45,17 +44,15 @@ import 'package:weather_app/my_app.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  // تفعيل وضع الاختبار في GetX
+  // Activate test mode for GetX
   Get.testMode = true;
 
-  // إعداد المتغيرات
   late MockFirebaseAuth mockAuth;
   late FakeFirebaseFirestore mockFirestore;
   late FirebaseServices mockFirebaseServices;
   late AuthController authController;
 
   setUp(() {
-    // إنشاء mocks قبل كل اختبار
     final mockUser = MockUser(uid: '123', email: 'test@example.com');
     mockAuth = MockFirebaseAuth(mockUser: mockUser);
     mockFirestore = FakeFirebaseFirestore();
@@ -70,27 +67,24 @@ void main() {
   });
 
   tearDown(() {
-    // تنظيف بعد كل اختبار
     Get.reset();
   });
 
-  testWidgets('اختبار تطبيق الطقس', (WidgetTester tester) async {
-    // بناء التطبيق
+  testWidgets('Widget test without real Firebase', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
-    
     await tester.pumpAndSettle();
 
-    // هنا ضع اختباراتك الفعلية بناءً على ما يحتويه تطبيقك
-    // مثال:
-    // expect(find.text('Weather App'), findsOneWidget);
-    // expect(find.byType(TextField), findsWidgets);
+    // You can now test your widgets
+    expect(find.byType(MaterialApp), findsOneWidget);
+
+    // Example: increment button test
+    // expect(find.text('0'), findsOneWidget);
   });
 
-  testWidgets('اختبار تسجيل الدخول', (WidgetTester tester) async {
+  testWidgets('AuthController uses mocked Firebase', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
-    // تحقق من حالة المستخدم
     expect(authController.currentUser, isNotNull);
     expect(authController.currentUser?.email, 'test@example.com');
   });
