@@ -28,7 +28,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.weather_app"
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = 36          // يفضل نفس compileSdk
         versionCode = 1
         versionName = "1.0.0"
