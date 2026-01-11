@@ -32,6 +32,7 @@
 
 
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
@@ -44,30 +45,53 @@ import 'package:weather_app/my_app.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  // Create mocks
-  final mockUser = MockUser(uid: '123', email: 'test@example.com');
-  final mockAuth = MockFirebaseAuth(mockUser: mockUser);
-  final mockFirestore = FakeFirebaseFirestore();
+  // تفعيل وضع الاختبار في GetX
+  Get.testMode = true;
 
-  // Inject mocks
-  final mockFirebaseServices = FirebaseServices(
-    auth: mockAuth,
-    firestore: mockFirestore,
-  );
+  // إعداد المتغيرات
+  late MockFirebaseAuth mockAuth;
+  late FakeFirebaseFirestore mockFirestore;
+  late FirebaseServices mockFirebaseServices;
+  late AuthController authController;
 
-  final authController = AuthController(firebaseServices: mockFirebaseServices);
-  Get.put(authController);
+  setUp(() {
+    // إنشاء mocks قبل كل اختبار
+    final mockUser = MockUser(uid: '123', email: 'test@example.com');
+    mockAuth = MockFirebaseAuth(mockUser: mockUser);
+    mockFirestore = FakeFirebaseFirestore();
 
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    mockFirebaseServices = FirebaseServices(
+      auth: mockAuth,
+      firestore: mockFirestore,
+    );
+
+    authController = AuthController(firebaseServices: mockFirebaseServices);
+    Get.put(authController);
+  });
+
+  tearDown(() {
+    // تنظيف بعد كل اختبار
+    Get.reset();
+  });
+
+  testWidgets('اختبار تطبيق الطقس', (WidgetTester tester) async {
+    // بناء التطبيق
     await tester.pumpWidget(const MyApp());
+    
+    await tester.pumpAndSettle();
 
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // هنا ضع اختباراتك الفعلية بناءً على ما يحتويه تطبيقك
+    // مثال:
+    // expect(find.text('Weather App'), findsOneWidget);
+    // expect(find.byType(TextField), findsWidgets);
+  });
 
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('اختبار تسجيل الدخول', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
 
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // تحقق من حالة المستخدم
+    expect(authController.currentUser, isNotNull);
+    expect(authController.currentUser?.email, 'test@example.com');
   });
 }
