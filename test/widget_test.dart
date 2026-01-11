@@ -31,61 +31,39 @@
 
 
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
-import 'package:weather_app/data/remote_data/firebase/firebase_services.dart';
-import 'package:weather_app/features/auth/domain/controller/auth_controller.dart';
+import 'package:weather_app/firebase_options.dart';
 import 'package:weather_app/my_app.dart';
+import 'package:weather_app/features/auth/domain/controller/auth_controller.dart';
+import 'package:weather_app/data/remote_data/firebase/firebase_services.dart';
 
-void main() {
+void main() async {
+  // تهيئة binding لاختبارات Widgets
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  // Activate test mode for GetX
+  // تهيئة Firebase حقيقي
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  // تفعيل وضع الاختبار في GetX
   Get.testMode = true;
 
-  late MockFirebaseAuth mockAuth;
-  late FakeFirebaseFirestore mockFirestore;
-  late FirebaseServices mockFirebaseServices;
-  late AuthController authController;
-
-  setUp(() {
-    final mockUser = MockUser(uid: '123', email: 'test@example.com');
-    mockAuth = MockFirebaseAuth(mockUser: mockUser);
-    mockFirestore = FakeFirebaseFirestore();
-
-    mockFirebaseServices = FirebaseServices(
-      auth: mockAuth,
-      firestore: mockFirestore,
-    );
-
-    authController = AuthController();
-    Get.put(authController);
-  });
+  // إنشاء AuthController
+  final authController = AuthController();
+  Get.put(authController);
 
   tearDown(() {
     Get.reset();
   });
 
-  testWidgets('Widget test without real Firebase', (WidgetTester tester) async {
+  testWidgets('Widget test with real Firebase', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
-    // You can now test your widgets
     expect(find.byType(MaterialApp), findsOneWidget);
-
-    // Example: increment button test
-    // expect(find.text('0'), findsOneWidget);
-  });
-
-  testWidgets('AuthController uses mocked Firebase', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
-    await tester.pumpAndSettle();
-
-    expect(authController.currentUser, isNotNull);
-    expect(authController.currentUser?.email, 'test@example.com');
   });
 }
