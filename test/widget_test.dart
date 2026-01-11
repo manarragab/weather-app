@@ -48,7 +48,7 @@ void main() {
   Get.testMode = true;
 
   late MockFirebaseAuth mockAuth;
-  late FakeFirebaseFirestore mockFirestore;au
+  late FakeFirebaseFirestore mockFirestore;
   late FirebaseServices mockFirebaseServices;
   late AuthController authController;
 
@@ -62,7 +62,7 @@ void main() {
       firestore: mockFirestore,
     );
 
-    authController = AuthController(firebaseServices: mockFirebaseServices);
+    authController = AuthController();
     Get.put(authController);
   });
 
