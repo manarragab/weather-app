@@ -11,30 +11,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ جلب الكود
+      # 1️⃣ Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2️⃣ تثبيت Flutter
+      # 2️⃣ Setup Flutter
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
           flutter-version: 3.38.6
           channel: stable
 
-      # 3️⃣ تحميل الـ packages
+      # 3️⃣ Install dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # 4️⃣ بناء APK
+      # 4️⃣ Build APK (Release)
       - name: Build APK
         run: flutter build apk --release
 
-      # 5️⃣ تثبيت Firebase CLI
+      # 5️⃣ Upload APK as Artifact (تحميله من GitHub)
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      # 6️⃣ Install Firebase CLI
       - name: Install Firebase CLI
         run: npm install -g firebase-tools
 
-      # 6️⃣ رفع التطبيق على Firebase App Distribution
+      # 7️⃣ Distribute to Firebase App Distribution
       - name: Distribute to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
