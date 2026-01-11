@@ -17,7 +17,7 @@ jobs:
       # 2️⃣ تثبيت Flutter
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.13.0'
+          flutter-version: 'stable'
 
       # 3️⃣ جلب الحزم dependencies
       - run: flutter pub get
@@ -35,6 +35,6 @@ jobs:
       - name: Distribute to Firebase
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
-          --app <1:1013606804464:android:8c5881b01983ab82fc4b35> \
+          --app 1:1013606804464:android:8c5881b01983ab82fc4b35 \
           --groups "testers" \
           --token ${{ secrets.FIREBASE_TOKEN }}
