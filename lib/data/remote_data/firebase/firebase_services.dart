@@ -5,13 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:weather_app/data/const/export.dart';
 import 'package:weather_app/data/remote_data/firebase/firebase_data.dart';
 
+
 class FirebaseServices {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
 
-  // Allow injecting mocks for testing
-  FirebaseServices({FirebaseAuth? auth, FirebaseFirestore? firestore})
-      : _auth = auth ?? FirebaseAuth.instance,
+  FirebaseServices({
+    FirebaseAuth? auth,
+    FirebaseFirestore? firestore,
+  })  : _auth = auth ?? FirebaseAuth.instance,
         _firestore = firestore ?? FirebaseFirestore.instance;
 
 //1 - sign in cloudinary website

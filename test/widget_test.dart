@@ -30,6 +30,8 @@
 
 
 
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
@@ -42,32 +44,23 @@ import 'package:weather_app/my_app.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  // Create a fake user
-  final mockUser = MockUser(
-    uid: '123',
-    email: 'test@example.com',
-  );
-
-  // Mock Firebase Auth
+  // Create mocks
+  final mockUser = MockUser(uid: '123', email: 'test@example.com');
   final mockAuth = MockFirebaseAuth(mockUser: mockUser);
-
-  // Fake Firestore
   final mockFirestore = FakeFirebaseFirestore();
 
-  // FirebaseServices with mock dependencies
+  // Inject mocks
   final mockFirebaseServices = FirebaseServices(
     auth: mockAuth,
     firestore: mockFirestore,
   );
 
-  // AuthController using the mocked FirebaseServices
   final authController = AuthController(firebaseServices: mockFirebaseServices);
   Get.put(authController);
 
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
 
-    // Replace these with actual widgets/texts in your app
     expect(find.text('0'), findsOneWidget);
     expect(find.text('1'), findsNothing);
 
