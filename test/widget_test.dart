@@ -27,6 +27,9 @@
 //     expect(find.text('1'), findsOneWidget);
 //   });
 // }
+
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -34,8 +37,11 @@ import 'package:weather_app/firebase_options.dart';
 import 'package:weather_app/my_app.dart';
 
 void main() {
+  // Make sure Flutter bindings are initialized
+  TestWidgetsFlutterBinding.ensureInitialized();
+
   setUpAll(() async {
-    // This initializes Firebase with the same options your app uses
+    // Initialize Firebase
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
