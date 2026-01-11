@@ -9,7 +9,7 @@ class GetBinding extends Bindings {
   void dependencies() {
     // Put permanent instances first
     Get.put(LoadingGetxController(), permanent: true);
-    Get.put(AuthController(firebaseServices: FirebaseServices()), permanent: true);
+    Get.put(AuthController(), permanent: true);
 
     // Controllers that depend on the above
     Get.put(MainGetxController(), permanent: true);

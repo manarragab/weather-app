@@ -48,7 +48,7 @@ void main() {
   Get.testMode = true;
 
   late MockFirebaseAuth mockAuth;
-  late FakeFirebaseFirestore mockFirestore;
+  late FakeFirebaseFirestore mockFirestore;au
   late FirebaseServices mockFirebaseServices;
   late AuthController authController;
 
