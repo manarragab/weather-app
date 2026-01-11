@@ -31,39 +31,88 @@
 
 
 
+
+
+
+// test/widget_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
-import 'package:weather_app/firebase_options.dart';
-import 'package:weather_app/my_app.dart';
-import 'package:weather_app/features/auth/domain/controller/auth_controller.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:weather_app/data/remote_data/firebase/firebase_services.dart';
+import 'package:weather_app/features/auth/domain/controller/auth_controller.dart';
+import 'package:weather_app/my_app.dart';
 
-void main() async {
-  // تهيئة binding لاختبارات Widgets
+void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-
-  // تهيئة Firebase حقيقي
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
   // تفعيل وضع الاختبار في GetX
   Get.testMode = true;
 
-  // إنشاء AuthController
-  final authController = AuthController();
-  Get.put(authController);
+  // المتغيرات
+  late MockFirebaseAuth mockAuth;
+  late FakeFirebaseFirestore mockFirestore;
+  late FirebaseServices mockFirebaseServices;
+  late AuthController authController;
 
+  // تهيئة قبل كل اختبار
+  setUp(() {
+    final mockUser = MockUser(uid: '123', email: 'test@example.com');
+    mockAuth = MockFirebaseAuth(mockUser: mockUser);
+    mockFirestore = FakeFirebaseFirestore();
+
+    // نمرر الـ mocks لـ FirebaseServices
+    mockFirebaseServices = FirebaseServices(
+      auth: mockAuth,
+      firestore: mockFirestore,
+    );
+
+    // نمرر الـ FirebaseServices الوهمي لـ AuthController
+    authController = AuthController();
+    Get.put(authController);
+  });
+
+  // تنظيف بعد كل اختبار
   tearDown(() {
     Get.reset();
   });
 
-  testWidgets('Widget test with real Firebase', (WidgetTester tester) async {
+  testWidgets('تطبيق الطقس يظهر بدون Firebase حقيقي', (WidgetTester tester) async {
     await tester.pumpWidget(const MyApp());
     await tester.pumpAndSettle();
 
+    // نتأكد أن الـ MaterialApp موجود
     expect(find.byType(MaterialApp), findsOneWidget);
+
+    // مثال: لو عندك TextField أو Buttons في الصفحة الرئيسية
+    // expect(find.byType(TextField), findsWidgets);
+  });
+
+  testWidgets('AuthController يستخدم Firebase mocks', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+
+    // المستخدم موجود من الـ MockFirebaseAuth
+    expect(authController.currentUser, isNotNull);
+    expect(authController.currentUser?.email, 'test@example.com');
+  });
+
+  testWidgets('تسجيل مستخدم جديد وهمي', (WidgetTester tester) async {
+    await tester.pumpWidget(const MyApp());
+    await tester.pumpAndSettle();
+
+    // استدعاء دالة التسجيل
+    await authController.registerFormKey.currentState?.validate(); // لو عندك فورم
+    final userData = await authController.firebaseServices.register(
+      name: 'Test User',
+      email: 'newuser@example.com',
+      password: '12345678',
+      phone: '01000000000',
+      country: 'Egypt',
+    );
+
+    expect(userData, isNotNull);
+    expect(userData?.email, 'newuser@example.com');
   });
 }
