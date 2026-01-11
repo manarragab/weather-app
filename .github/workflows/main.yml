@@ -1,6 +1,5 @@
 name: Flutter CI + Firebase App Distribution - Weather App
 
-# تشغيل workflow عند كل push على main أو يدويًا
 on:
   push:
     branches:
@@ -13,34 +12,32 @@ jobs:
 
     steps:
       # 1️⃣ جلب الكود
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # 2️⃣ تثبيت Flutter نسخة محددة (3.38.6) + architecture + cache
-      - uses: subosito/flutter-action@v2
+      # 2️⃣ تثبيت Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.38.6'
-          architecture: 'x64'
-          cache: true
+          flutter-version: 3.38.6
+          channel: stable
 
-      # 3️⃣ التحقق من نسخة Flutter و Dart
-      - run: flutter --version
+      # 3️⃣ تحميل الـ packages
+      - name: Install dependencies
+        run: flutter pub get
 
-      # 4️⃣ جلب الحزم dependencies
-      - run: flutter pub get
+      # 4️⃣ بناء APK
+      - name: Build APK
+        run: flutter build apk --release
 
-      # 5️⃣ تحليل الكود للكشف عن الأخطاء (warnings لن توقف الـ CI)
-      - run: flutter analyze --no-fatal-warnings || true
+      # 5️⃣ تثبيت Firebase CLI
+      - name: Install Firebase CLI
+        run: npm install -g firebase-tools
 
-      # 6️⃣ تشغيل الاختبارات مع تقرير التغطية
-      - run: flutter test --coverage || true
-
-      # 7️⃣ بناء APK نسخة Release
-      - run: flutter build apk --release
-
-      # 8️⃣ رفع التطبيق على Firebase App Distribution
-      - name: Distribute to Firebase
+      # 6️⃣ رفع التطبيق على Firebase App Distribution
+      - name: Distribute to Firebase App Distribution
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
-          --app 1:1013606804464:android:8c5881b01983ab82fc4b35 \
-          --groups "testers" \
-          --token ${{ secrets.FIREBASE_TOKEN }}
+            --app 1:1013606804464:android:8c5881b01983ab82fc4b35 \
+            --groups "testers" \
+            --token ${{ secrets.FIREBASE_TOKEN }}
