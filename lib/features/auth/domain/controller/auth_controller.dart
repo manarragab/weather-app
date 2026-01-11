@@ -8,6 +8,10 @@ import 'package:weather_app/features/home/domain/controller/home_controller.dart
 import 'package:weather_app/res/router/pages.dart';
 
 class AuthController extends MainGetxController with CustomStateMixin {
+   final FirebaseServices firebaseServices;
+
+  AuthController({required this.firebaseServices});
+
   final hidePassword1 = true.obs;
   final hidePassword2 = true.obs;
 
@@ -23,7 +27,7 @@ class AuthController extends MainGetxController with CustomStateMixin {
 
   String? selectedCountry;
 
-  final FirebaseServices firebaseServices = FirebaseServices();
+  //final FirebaseServices firebaseServices = FirebaseServices();
   FirebaseData? currentUser;
   File? image;
   File? imageProf;
