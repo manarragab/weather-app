@@ -29,22 +29,26 @@
 // }
 
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:weather_app/firebase_options.dart';
+import 'package:firebase_auth_mocks/firebase_auth_mocks.dart';
+import 'package:google_sign_in_mocks/google_sign_in_mocks.dart';
+import 'package:get/get.dart';
 import 'package:weather_app/my_app.dart';
 
 void main() {
-  // Make sure Flutter bindings are initialized
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  setUpAll(() async {
-    // Initialize Firebase
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+  // Create mock user & mock auth
+  final mockUser = MockUser(
+    uid: 'ABC123',
+    email: 'test@example.com',
+  );
+  final mockAuth = MockFirebaseAuth(mockUser: mockUser);
+
+  setUpAll(() {
+    // Inject mockAuth into GetX (or wherever your auth controller uses FirebaseAuth)
+    Get.put(mockAuth); 
   });
 
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
