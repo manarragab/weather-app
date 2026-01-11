@@ -1,5 +1,6 @@
 name: Flutter CI + Firebase App Distribution - Weather App
 
+# تشغيل workflow عند كل push على main أو يدويًا
 on:
   push:
     branches:
@@ -14,24 +15,27 @@ jobs:
       # 1️⃣ جلب الكود
       - uses: actions/checkout@v3
 
-      # 2️⃣ تثبيت Flutter
+      # 2️⃣ تثبيت Flutter نسخة محددة (3.38.6)
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'stable'
+          flutter-version: '3.38.6'
 
-      # 3️⃣ جلب الحزم dependencies
+      # 3️⃣ التحقق من نسخة Flutter و Dart
+      - run: flutter --version
+
+      # 4️⃣ جلب الحزم dependencies
       - run: flutter pub get
 
-      # 4️⃣ تحليل الكود
+      # 5️⃣ تحليل الكود للكشف عن الأخطاء
       - run: flutter analyze
 
-      # 5️⃣ تشغيل الاختبارات
+      # 6️⃣ تشغيل الاختبارات مع تقرير التغطية
       - run: flutter test --coverage
 
-      # 6️⃣ عمل Build APK
+      # 7️⃣ بناء APK نسخة Release
       - run: flutter build apk --release
 
-      # 7️⃣ رفع التطبيق على Firebase App Distribution
+      # 8️⃣ رفع التطبيق على Firebase App Distribution
       - name: Distribute to Firebase
         run: |
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
